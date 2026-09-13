@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UPI Link Test</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0;padding:20px}
+.card{max-width:430px;margin:30px auto;background:white;padding:22px;border-radius:18px;box-shadow:0 4px 18px #0001}
+h2{margin-top:0}.btn{display:block;width:100%;box-sizing:border-box;padding:14px;border:0;border-radius:12px;background:#2563eb;color:white;text-align:center;text-decoration:none;font-size:16px;margin-top:12px}
+input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #ddd;border-radius:10px;margin:7px 0 12px}
+small{color:#666}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>UPI Payment Link Test</h2>
+<small>Apna UPI ID aur amount डालकर अपने फोन पर payment app खोलकर test करें.</small>
+<label>UPI ID</label>
+<input id="upi" placeholder="example@upi">
+<label>Amount (₹7)</label>
+<input id="amt" type="number" min="1" step="0.01" placeholder="100">
+<label>Note</label>
+<input id="note" placeholder="Payment">
+<a id="pay" class="btn" href="#">Open UPI Payment</a>
+<p id="msg"></p>
+</div>
+<script>
+function update(){
+  const upi=document.getElementById('upi').value.trim();
+  const amt=document.getElementById('amt').value.trim();
+  const note=document.getElementById('note').value.trim() || 'Payment';
+  const a=document.getElementById('pay');
+  if(!upi){a.href='#';return;}
+  let url='upi://pay?pa='+encodeURIComponent(upi)+'&pn='+encodeURIComponent('Payment');
+  if(amt) url+='&am='+encodeURIComponent(amt);
+  url+='&cu=INR&tn='+encodeURIComponent(note);
+  a.href=url;
+}
+document.querySelectorAll('input').forEach(x=>x.addEventListener('input',update));
+</script>
+</body>
+</html>
