@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WAVE ZONE – Live Predictions</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #020817;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 720px;
+      background: radial-gradient(circle at top, #0a1938 0%, #020612 100%);
+      border-radius: 16px;
+      padding: 15px;
+      border: 1px solid #1e3a8a;
+    }
+    /* Header Logo */
+    .logo {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .logo h1 {
+      font-size: clamp(32px, 8vw, 48px);
+      font-weight: 900;
+      font-style: italic;
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 50%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+      letter-spacing: 2px;
+    }
+
+    /* Prize Banner */
+    .prize-banner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      background: radial-gradient(circle, #0d2b6b 0%, #040d24 100%);
+      border: 2px solid #38bdf8;
+      border-radius: 16px;
+      padding: 14px 10px;
+      margin-bottom: 14px;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+    }
+    .prize-badge {
+      flex: 1;
+      max-width: 150px;
+      text-align: center;
+      position: relative;
+      padding-top: 14px;
+    }
+    .crown {
+      font-size: 22px;
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    }
+    .medal-circle {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 900;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.7), inset 0 0 8px rgba(255,255,255,0.5);
+    }
+    .rank-1 .medal-circle {
+      background: radial-gradient(circle, #dc2626 30%, #7f1d1d 100%);
+      border: 4px solid #fbbf24;
+      color: #fde047;
+      text-shadow: 0 2px 4px #000;
+    }
+    .rank-1 .ribbon {
+      background: linear-gradient(180deg, #ef4444, #991b1b);
+      border: 1.5px solid #fbbf24;
+      color: #fde047;
+    }
+    .rank-2 .medal-circle {
+      background: radial-gradient(circle, #2563eb 30%, #1e3a8a 100%);
+      border: 4px solid #e2e8f0;
+      color: #ffffff;
+      text-shadow: 0 2px 4px #000;
+    }
+    .rank-2 .ribbon {
+      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+      border: 1.5px solid #e2e8f0;
+      color: #fde047;
+    }
+    .rank-3 .medal-circle {
+      background: radial-gradient(circle, #92400e 30%, #451a03 100%);
+      border: 4px solid #f59e0b;
+      color: #fde047;
+      text-shadow: 0 2px 4px #000;
+    }
+    .rank-3 .ribbon {
+      background: linear-gradient(180deg, #22c55e, #15803d);
+      border: 1.5px solid #fbbf24;
+      color: #fde047;
+    }
+    .ribbon {
+      margin-top: -12px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      font-size: clamp(12px, 3.2vw, 15px);
+      font-weight: 900;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 1px 2px #000;
+    }
+
+    /* Countdown Box */
+    .timer-box {
+      background: linear-gradient(90deg, #061126, #0d234a, #061126);
+      border: 2px solid #00d2ff;
+      border-radius: 16px;
+      padding: 14px 12px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.3), inset 0 0 10px rgba(255, 0, 85, 0.2);
+      text-align: center;
+    }
+    .timer-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .clock-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2.5px solid #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 10px #38bdf8;
+    }
+    .countdown-label {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      color: #93c5fd;
+    }
+    .countdown-digits {
+      font-size: clamp(24px, 6vw, 36px);
+      font-weight: 900;
+      color: #fbbf24;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 2px;
+    }
+
+    /* Highlighted Info Badges */
+    .info-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(56, 189, 248, 0.4);
+    }
+    .pill {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #38bdf8;
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .pill.highlight {
+      background: linear-gradient(90deg, rgba(22, 163, 74, 0.35), rgba(21, 128, 61, 0.6));
+      border: 1.5px solid #4ade80;
+      color: #dcfce7;
+      width: 100%;
+      max-width: 420px;
+      font-size: 13.5px;
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.35);
+    }
+
+    /* Grid of Players */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: linear-gradient(180deg, #0b1936 0%, #060e20 100%);
+      border: 1.5px solid #1d4ed8;
+      border-radius: 14px;
+      padding: 12px 10px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    .avatar {
+      width: 85px;
+      height: 85px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      border: 2px solid #60a5fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #fff;
+      overflow: hidden;
+    }
+    .avatar.nz {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border-color: #94a3b8;
+    }
+    .team-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .team-ind {
+      background: rgba(37, 99, 235, 0.25);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+    }
+    .team-nz {
+      background: rgba(148, 163, 184, 0.2);
+      border: 1px solid #94a3b8;
+      color: #e2e8f0;
+    }
+    .player-name {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #f8fafc;
+    }
+    .counter-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .btn-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid #cbd5e1;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-circle:active { background: rgba(255,255,255,0.2); }
+    .run-val {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ef4444;
+      text-shadow: 0 0 2px #fff;
+      min-width: 50px;
+    }
+    .run-lbl {
+      font-size: 15px;
+      font-weight: bold;
+      color: #ef4444;
+    }
+    /* Slider */
+    .slider-wrap {
+      padding: 0 4px;
+      margin-bottom: 6px;
+    }
+    input[type=range] {
+      width: 100%;
+      appearance: none;
+      height: 6px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 var(--pct, 50%), #cbd5e1 var(--pct, 50%), #cbd5e1 100%);
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fca5a5, #dc2626 60%, #7f1d1d);
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 8px #f97316;
+      cursor: pointer;
+    }
+    .ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+      padding: 0 2px;
+    }
+    /* Join Me UPI Button */
+    .join-btn {
+      width: 100%;
+      background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
+    }
+    .join-btn:active { transform: scale(0.98); }
+    .upi-tag {
+      background: rgba(255,255,255,0.9);
+      color: #0f172a;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 7px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+    }
+    .join-text {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 900;
+      margin-right: 10px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>WAVE ZONE</h1>
+    </div>
+
+    <!-- 1st, 2nd, 3rd Prize Banner -->
+    <div class="prize-banner">
+      <div class="prize-badge rank-1">
+        <div class="crown">👑</div>
+        <div class="medal-circle">1</div>
+        <div class="ribbon">₹ 1 लाख</div>
+      </div>
+      <div class="prize-badge rank-2">
+        <div class="crown">👑</div>
+        <div class="medal-circle">2</div>
+        <div class="ribbon">₹ 50 हजार</div>
+      </div>
+      <div class="prize-badge rank-3">
+        <div class="crown">👑</div>
+        <div class="medal-circle">3</div>
+        <div class="ribbon">₹ 25 हजार</div>
+      </div>
+    </div>
+
+    <div class="timer-box">
+      <div class="timer-top">
+        <div class="clock-icon">🕒</div>
+        <div>
+          <div class="countdown-label">LIVE TIME</div>
+          <div class="countdown-digits" id="timer">23 : 59 : 42</div>
+        </div>
+      </div>
+
+      <!-- Highlighted 4 Points -->
+      <div class="info-pills">
+        <span class="pill">👉 join UPI</span>
+        <span class="pill">🔄 iD REFUND</span>
+        <span class="pill">🏆 winning amount</span>
+        <span class="pill highlight">⏱️ khel samapt 3 se 4 minut ho jaega 🙏 100% ho jaega</span>
+      </div>
+    </div>
+
+    <div class="grid" id="players-grid"></div>
+  </div>
+
+  <script>
+    const players = [
+      { name: "Virat Kohli", initials: "VK", team: "IND", flag: "🇮🇳" },
+      { name: "Kane Williamson", initials: "KW", team: "NZ", flag: "🇳🇿" },
+      { name: "Rohit Sharma", initials: "RS", team: "IND", flag: "🇮🇳" },
+      { name: "Rachin Ravindra", initials: "RR", team: "NZ", flag: "🇳🇿" },
+      { name: "Shubman Gill", initials: "SG", team: "IND", flag: "🇮🇳" },
+      { name: "Daryl Mitchell", initials: "DM", team: "NZ", flag: "🇳🇿" }
+    ];
+
+    const grid = document.getElementById('players-grid');
+
+    players.forEach((player, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const isNZ = player.team === 'NZ';
+      card.innerHTML = `
+        <div class="avatar ${isNZ ? 'nz' : ''}">${player.initials}</div>
+        <div class="team-badge ${isNZ ? 'team-nz' : 'team-ind'}">${player.flag} ${player.team}</div>
+        <div class="player-name">${player.name}</div>
+        <div class="counter-row">
+          <button class="btn-circle" onclick="changeVal(${idx}, -1)">−</button>
+          <span class="run-val" id="val-${idx}">350</span>
+          <button class="btn-circle" onclick="changeVal(${idx}, 1)">+</button>
+          <span class="run-lbl">Runs</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="slider-${idx}" min="0" max="700" value="350" oninput="updateSlider(${idx}, this.value)">
+        </div>
+        <div class="ticks">
+          <span>0</span><span>175</span><span>350</span><span>525</span><span>700</span>
+        </div>
+        <button class="join-btn" onclick="payUPI('${player.name}', ${idx})">
+          <span class="upi-tag">UPI ▸</span>
+          <span class="join-text">join me</span>
+        </button>
+      `;
+      grid.appendChild(card);
+      updateSlider(idx, 350);
+    });
+
+    function updateSlider(idx, val) {
+      val = Math.max(0, Math.min(700, Number(val)));
+      const slider = document.getElementById(`slider-${idx}`);
+      const display = document.getElementById(`val-${idx}`);
+      slider.value = val;
+      display.textContent = val;
+      const pct = (val / 700) * 100;
+      slider.style.setProperty('--pct', pct + '%');
+    }
+
+    function changeVal(idx, delta) {
+      const slider = document.getElementById(`slider-${idx}`);
+      updateSlider(idx, Number(slider.value) + delta);
+    }
+
+    function payUPI(playerName, idx) {
+      const runs = document.getElementById(`slider-${idx}`).value;
+      const params = new URLSearchParams({
+        pa: '999696ra@finobank',
+        pn: 'RAKESH KUMAR',
+        am: '29.00',
+        cu: 'INR',
+        tn: `${playerName} - ${runs} Runs`
+      });
+      window.location.href = 'upi://pay?' + params.toString();
+    }
+
+    let totalSeconds = 23 * 3600 + 59 * 60 + 42;
+    setInterval(() => {
+      if (totalSeconds <= 0) return;
+      totalSeconds--;
+      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const s = String(totalSeconds % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${h} : ${m} : ${s}`;
+    }, 1000);
+  </script>
+</body>
+</html>
